@@ -43,6 +43,101 @@ a:hover {
 	padding: 1rem;
 	border: 2px solid var(--base-color);
 }
+/*ヘッダー
+-------------------------------------*/
+.header {
+	display: flex;
+    flex-direction: row;
+    padding: 2rem 0 0 0;
+}
+.header-box {
+	margin-left: auto;
+	margin-top: 8px;
+}
+.contact-button {
+	padding: 1rem;
+	border: 2px solid var(--base-color);
+}
+nav ul {
+	display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    list-style: none;
+	margin: 1rem 0 0 0;
+}
+nav li {
+	flex: 1 0 auto;
+}
+nav li a {
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+}
+nav a:hover {
+    background-color: var(--back-color);   
+}
+nav a {
+    padding: 0.5rem;
+}
+
+@media screen and (min-width: 768px){
+/* PC時はMENUボタンを非表示 */
+#open,#close {
+    display: none !important;
+}
+
+#navi {
+    display: block !important;
+}
+}
+
+@media screen and (max-width: 768px){
+.header {
+	flex-direction: column;
+    margin-bottom: 10px;
+}
+.header #open,#close  {
+    position: absolute;
+    top: 20px;
+    right: 12px;
+}
+nav ul {
+	flex-direction: column;
+}
+.header li {
+	padding-top: 0;
+}
+/* スマホ時はMENUボタンを表示 */
+#open {
+    display: block;
+    background: url(../img/button.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 50px;
+    height: 50px;
+    border: none;
+    position: absolute;
+    top: 20px;
+    right: 12px;
+}
+#close  {
+    display: block;
+    background: url(../img/button2.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 50px;
+    height: 50px;
+    border: none;
+    position: absolute;
+    top: 20px;
+    right: 12px;
+}
+/* スマホ時はメニューを非表示 */
+#navi {
+    display: none;
+}
+}
+    
 /*メイン画像
 -------------------------------------*/
 .mainimg img {
@@ -88,10 +183,22 @@ section {
 <header>    
 <div class="container">
 <div class="row">
-    <div class="col span-12 header">
-        <h1><a href="">自由集会の企画</a></h1>
-       </div>
-    </div>
+    <div class="col span-12">
+        <nav>
+          <div id="open"></div>
+          <div id="close"></div>   
+            <div id="navi">
+        <ul>
+            <li><a href="index.html">ホーム</a></li>
+            <li><a href="#1">発表者</a></li>
+            <li><a href="#2">企画者</a></li>
+            <li><a href="#3">発表募集</a></li>
+            <li><a href="#4">調査地</a></li>
+            <li><a href="#5">お問い合わせ</a></li>
+         </ul>
+             </div>
+        </nav>
+        </div>
     </div>
 </header>
     <div class="mainimg">
@@ -124,7 +231,7 @@ section {
 </section>
 		
 <section id="2">
-        <h2 class="center"><span class="under">スタッフ紹介</span></h2>
+        <h2 class="center"><span class="under">企画者</span></h2>
 <div class="container center">
 <div class="row">
     <div class="col span-4">
