@@ -1,5 +1,7 @@
 <!doctype html>
 <html>
+
+	
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,33 +35,27 @@ a {
 a:hover { 
     color: var(--linkhover-color);
 }
-.header {
-	display: flex;
-    flex-direction: row;
-    padding: 2rem 0 0 0;
-}
-.header-box {
-	margin-left: auto;
-	margin-top: 8px;
-}
-.contact-button {
-	padding: 1rem;
-	border: 2px solid var(--base-color);
-}
+
 /*ヘッダー
 -------------------------------------*/
 .header {
 	display: flex;
     flex-direction: row;
     padding: 2rem 0 0 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 .header-box {
 	margin-left: auto;
-	margin-top: 8px;
+	margin-top: 0px;
+	margin-top: 0;
+    margin-bottom: 0;
 }
 .contact-button {
 	padding: 1rem;
 	border: 2px solid var(--base-color);
+	    margin-top: 0;
+    margin-bottom: 0;
 }
 nav ul {
 	display: flex;
@@ -67,6 +63,8 @@ nav ul {
     justify-content: space-around;
     list-style: none;
 	margin: 1rem 0 0 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 nav li {
 	flex: 1 0 auto;
@@ -75,6 +73,8 @@ nav li a {
     text-decoration: none;
     text-align: center;
     width: 100%;
+        margin-top: 0;
+    margin-bottom: 0;
 }
 nav a:hover {
     background-color: var(--back-color);   
@@ -113,7 +113,7 @@ nav ul {
 /* スマホ時はMENUボタンを表示 */
 #open {
     display: block;
-    background: url(../img/button.png);
+    background: url(../image/button.png);
     background-repeat: no-repeat;
     background-size: contain;
     width: 50px;
@@ -125,7 +125,7 @@ nav ul {
 }
 #close  {
     display: block;
-    background: url(../img/button2.png);
+    background: url(../image/button2.png);
     background-repeat: no-repeat;
     background-size: contain;
     width: 50px;
@@ -169,7 +169,7 @@ section {
     padding-bottom: 1rem;
 }
 .under {
-    border-bottom: 0.4rem solid var(--base-color);
+    #border-bottom: 0.4rem solid var(--base-color);
     padding:0 1rem 1rem 1rem;
 }
 .center {
@@ -187,6 +187,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 1rem;
   font-weight: 300;
+  border-bottom: none;
   letter-spacing: 0.1em;}
 h1 { font-size: 3.2rem; line-height: 1.2;  letter-spacing: -.1rem;}
 h2 { font-size: 3.0rem; line-height: 1.25; letter-spacing: -.1rem; }
@@ -204,6 +205,16 @@ h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
   h5 { font-size: 1.8rem; }
   h6 { font-size: 1.5rem; }
 }
+@media (max-width: 767px) {
+  /* Only apply this style to screens narrower than 768px (non-mobile devices) */
+  .mobile-only {
+    display: none;
+  }
+}
+.smartphone-only {
+  display: none;
+}
+
 
 p {
   margin-top: 0; 
@@ -219,14 +230,9 @@ p {
 a {
   color: #0080ff; }
 a:hover {
-  color: #0FA0CE; }
-
-
-	
+  color: #0FA0CE; }	
 </style>
 	
-<!-- Favicon -->
-<link rel="icon" type="image/png" href="img/favicon.png">
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-DTGRGFDF5R"></script>
