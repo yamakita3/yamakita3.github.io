@@ -122,7 +122,9 @@
 	}
 .leaflet-top,
 .leaflet-bottom {
-	bottom: 0;
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
 	}
 .leaflet-top {
 	top: 0;
