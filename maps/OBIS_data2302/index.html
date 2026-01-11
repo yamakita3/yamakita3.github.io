@@ -5,181 +5,135 @@
   <title>OBIS maps</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+    html, body { height: 100%; margin: 0; }
+    #map { width: 100%; height: 100%; }
     .control-panel {
       position: absolute;
       top: 10px;
       left: 50px;
       z-index: 1000;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255,255,255,0.9);
       padding: 8px 10px;
       border-radius: 4px;
       font-size: 14px;
     }
-    .control-panel label {
-      display: block;
-      margin-bottom: 4px;
-    }
+    .control-panel label { display: block; margin-bottom: 4px; }
     .control-panel select,
-    .control-panel input[type="range"] {
-      width: 200px;
-    }
+    .control-panel input[type="range"] { width: 200px; }
   </style>
 </head>
 <body>
-  <div id="map"></div>
 
-  <!-- コントロールUI -->
-  <div class="control-panel">
-    <label for="layerSelect"><b>指標 / 変換:</b></label>
-    <select id="layerSelect">
-      <option value="N_asis_OBIS_all">N asis</option>
-      <option value="N_log_OBIS_all">N log</option>
-      <option value="es50_asis_obis">ES50 asis</option>
-      <option value="es50_log_obis">ES50 log</option>
-      <option value="maxp_asis_obis">MaxP asis</option>
-      <option value="maxp_log_obis">MaxP log</option>
-      <option value="shanon_asis_obis">Shannon asis</option>
-      <option value="shanon_log_asis_obis">Shannon log</option>
-      <option value="simpson_asis_obis">Simpson asis</option>
-      <option value="simpson_log_obis">Simpson log</option>
-      <option value="sp_asis_obis">SP asis</option>
-      <option value="sp_log_obis">SP log</option>
-    </select>
+<div id="map"></div>
 
-    <label for="opacityRange"><b>不透明度:</b></label>
-    <input id="opacityRange" type="range" min="0" max="1" step="0.05" value="0.7" />
-  </div>
+<div class="control-panel">
+  <label><b>指標 / 変換:</b></label>
+  <select id="layerSelect">
+    <option value="N_asis_OBIS_all">N asis</option>
+    <option value="N_log_OBIS_all">N log</option>
+    <option value="es50_asis_obis">ES50 asis</option>
+    <option value="es50_log_obis">ES50 log</option>
+    <option value="maxp_asis_obis">MaxP asis</option>
+    <option value="maxp_log_obis">MaxP log</option>
+    <option value="shanon_asis_obis">Shannon asis</option>
+    <option value="shanon_log_asis_obis">Shannon log</option>
+    <option value="simpson_asis_obis">Simpson asis</option>
+    <option value="simpson_log_obis">Simpson log</option>
+    <option value="sp_asis_obis">SP asis</option>
+    <option value="sp_log_obis">SP log</option>
+  </select>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
+  <label><b>不透明度:</b></label>
+  <input id="opacityRange" type="range" min="0" max="1" step="0.05" value="0.7" />
+</div>
 
-  <script>
-    // ---------- 1. ベースマップ ----------
-    var map = L.map('map', {
-      center: [20, 0],   // 中心（適宜調整）
-      zoom: 2,          // 初期ズーム
-      worldCopyJump: true
-    });
-    var crs4326 = new L.Proj.CRS(
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- ★ これが必須（Proj4Leaflet） -->
+<script src="https://unpkg.com/proj4@2.7.5/dist/proj4.js"></script>
+<script src="https://unpkg.com/proj4leaflet@1.0.2/src/proj4leaflet.js"></script>
+
+<script>
+
+// ---- 1. EPSG:4326 の地図を作る ----
+var crs4326 = new L.Proj.CRS(
   'EPSG:4326',
   '+proj=longlat +datum=WGS84 +no_defs',
-  {
-    resolutions: [1.40625, 0.703125, 0.3515625, 0.17578125, 0.087890625]
-  }
-  );
-    var map = L.map('map', { crs: crs4326 });
+  { resolutions: [1.40625, 0.703125, 0.3515625, 0.17578125] }
+);
 
+var map = L.map('map', {
+  crs: crs4326,
+  center: [20, 0],
+  zoom: 2
+});
 
-     //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      // maxZoom: 8,
-      // attribution: '&copy; OpenStreetMap contributors'
-     //}).addTo(map);
-    L.tileLayer(
+// ---- 2. ベースマップ（国境線なし + 海底地形） ----
+L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
   { attribution: '© CartoDB' }
-    ).addTo(map);
-    L.tileLayer(
+).addTo(map);
+
+L.tileLayer(
   'https://tiles.gebco.net/tiles/gebco_latest/{z}/{x}/{y}.png',
   { attribution: 'GEBCO' }
-    ).addTo(map);
-    L.tileLayer(
-  'https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/gebco_2020/MapServer/tile/{z}/{y}/{x}',
-  { attribution: 'NOAA' }
-    ).addTo(map);
+).addTo(map);
 
-
-    // ---------- 2. PNG を地球全体に貼る bounds ----------
+// ---- 3. PNG の範囲（EPSG:4326） ----
     // [南西緯度, 南西経度], [北東緯度, 北東経度]
     var worldBounds = [[-105, -203], [95, 270]];
 
-    // ---------- 3. PNG レイヤの定義 ----------
-       // key: セレクトボックスの value, value: 対応する画像ファイル名
-    var overlayConfigs = {
-      'N_asis_OBIS_all':    'N_asis_OBIS_all.png',
-      'N_log_OBIS_all':     'N_log_OBIS_all.png',
-      'es50_asis_obis':     'es50_asis_obis.png',
-      'es50_log_obis':      'es50_log_obis.png',
-      'maxp_asis_obis':     'maxp_asis_obis.png',
-      'maxp_log_obis':      'maxp_log_obis.png',
-      'shanon_asis_obis':   'shanon_asis_obis.png',
-      'shanon_log_asis_obis': 'shanon_log_asis_obis.png',
-      'simpson_asis_obis':  'simpson_asis_obis.png',
-      'simpson_log_obis':   'simpson_log_obis.png',
-      'sp_asis_obis':       'sp_asis_obis.png',
-      'sp_log_obis':        'sp_log_obis.png'
-    };
+// ---- 4. PNG レイヤ定義 ----
+var overlayConfigs = {
+  'N_asis_OBIS_all': 'N_asis_OBIS_all.png',
+  'N_log_OBIS_all': 'N_log_OBIS_all.png',
+  'es50_asis_obis': 'es50_asis_obis.png',
+  'es50_log_obis': 'es50_log_obis.png',
+  'maxp_asis_obis': 'maxp_asis_obis.png',
+  'maxp_log_obis': 'maxp_log_obis.png',
+  'shanon_asis_obis': 'shanon_asis_obis.png',
+  'shanon_log_asis_obis': 'shanon_log_asis_obis.png',
+  'simpson_asis_obis': 'simpson_asis_obis.png',
+  'simpson_log_obis': 'simpson_log_obis.png',
+  'sp_asis_obis': 'sp_asis_obis.png',
+  'sp_log_obis': 'sp_log_obis.png'
+};
 
-    // 実際の Leaflet imageOverlay オブジェクトを保持
-    var overlays = {};
-    var currentOverlay = null;
+var overlays = {};
+var currentOverlay = null;
+var defaultOpacity = 0.7;
 
-    // すべての overlay を事前に作成（表示するのは1つだけ）
-    var defaultOpacity = 0.7;
+for (var key in overlayConfigs) {
+  overlays[key] = L.imageOverlay(
+    overlayConfigs[key],
+    worldBounds,
+    { opacity: defaultOpacity }
+  );
+}
 
-    for (var key in overlayConfigs) {
-      if (overlayConfigs.hasOwnProperty(key)) {
-        overlays[key] = L.imageOverlay(overlayConfigs[key], worldBounds, {
-          opacity: defaultOpacity,
-          interactive: false
-        });
-      }
-    }
+// ---- 5. 切替処理 ----
+var layerSelect = document.getElementById('layerSelect');
+var opacityRange = document.getElementById('opacityRange');
 
-    // ---------- 4. セレクトボックスで切り替え ----------
-    var layerSelect = document.getElementById('layerSelect');
-    var opacityRange = document.getElementById('opacityRange');
+function setOverlay(key) {
+  if (currentOverlay) map.removeLayer(currentOverlay);
+  var ov = overlays[key];
+  ov.setOpacity(parseFloat(opacityRange.value));
+  ov.addTo(map);
+  currentOverlay = ov;
+}
 
-    function setOverlay(key) {
-      // 現在の overlay を地図から外す
-      if (currentOverlay) {
-        map.removeLayer(currentOverlay);
-      }
-      // 新しい overlay を追加
-      var ov = overlays[key];
-      if (ov) {
-        ov.setOpacity(parseFloat(opacityRange.value));
-        ov.addTo(map);
-        currentOverlay = ov;
-      }
-    }
+setOverlay(layerSelect.value);
 
-    // 初期表示（セレクトの最初の値）
-    setOverlay(layerSelect.value);
+layerSelect.addEventListener('change', () => setOverlay(layerSelect.value));
+opacityRange.addEventListener('input', () => {
+  if (currentOverlay) currentOverlay.setOpacity(parseFloat(opacityRange.value));
+});
 
-    // セレクト変更時に切り替え
-    layerSelect.addEventListener('change', function () {
-      setOverlay(this.value);
-    });
-
-    // 不透明度スライダー
-    opacityRange.addEventListener('input', function () {
-      var v = parseFloat(this.value);
-      if (currentOverlay) {
-        currentOverlay.setOpacity(v);
-      }
-    });
-  </script>
+</script>
 </body>
 </html>
-
