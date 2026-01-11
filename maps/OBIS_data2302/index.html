@@ -81,11 +81,33 @@
       zoom: 2,          // 初期ズーム
       worldCopyJump: true
     });
+    var crs4326 = new L.Proj.CRS(
+  'EPSG:4326',
+  '+proj=longlat +datum=WGS84 +no_defs',
+  {
+    resolutions: [1.40625, 0.703125, 0.3515625, 0.17578125, 0.087890625]
+  }
+  );
+    var map = L.map('map', { crs: crs4326 });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 8,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+
+     //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      // maxZoom: 8,
+      // attribution: '&copy; OpenStreetMap contributors'
+     //}).addTo(map);
+    L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+  { attribution: '© CartoDB' }
+    ).addTo(map);
+    L.tileLayer(
+  'https://tiles.gebco.net/tiles/gebco_latest/{z}/{x}/{y}.png',
+  { attribution: 'GEBCO' }
+    ).addTo(map);
+    L.tileLayer(
+  'https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/gebco_2020/MapServer/tile/{z}/{y}/{x}',
+  { attribution: 'NOAA' }
+    ).addTo(map);
+
 
     // ---------- 2. PNG を地球全体に貼る bounds ----------
     // [南西緯度, 南西経度], [北東緯度, 北東経度]
