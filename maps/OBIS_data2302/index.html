@@ -92,3 +92,72 @@
     var worldBounds = [[-90, -180], [90, 180]];
 
     // ---------- 3. PNG レイヤの定義 ----------
+       // key: セレクトボックスの value, value: 対応する画像ファイル名
+    var overlayConfigs = {
+      'N_asis_OBIS_all':    'N_asis_OBIS_all.png',
+      'N_log_OBIS_all':     'N_log_OBIS_all.png',
+      'es50_asis_obis':     'es50_asis_obis.png',
+      'es50_log_obis':      'es50_log_obis.png',
+      'maxp_asis_obis':     'maxp_asis_obis.png',
+      'maxp_log_obis':      'maxp_log_obis.png',
+      'shanon_asis_obis':   'shanon_asis_obis.png',
+      'shanon_log_asis_obis': 'shanon_log_asis_obis.png',
+      'simpson_asis_obis':  'simpson_asis_obis.png',
+      'simpson_log_obis':   'simpson_log_obis.png',
+      'sp_asis_obis':       'sp_asis_obis.png',
+      'sp_log_obis':        'sp_log_obis.png'
+    };
+
+    // 実際の Leaflet imageOverlay オブジェクトを保持
+    var overlays = {};
+    var currentOverlay = null;
+
+    // すべての overlay を事前に作成（表示するのは1つだけ）
+    var defaultOpacity = 0.7;
+
+    for (var key in overlayConfigs) {
+      if (overlayConfigs.hasOwnProperty(key)) {
+        overlays[key] = L.imageOverlay(overlayConfigs[key], worldBounds, {
+          opacity: defaultOpacity,
+          interactive: false
+        });
+      }
+    }
+
+    // ---------- 4. セレクトボックスで切り替え ----------
+    var layerSelect = document.getElementById('layerSelect');
+    var opacityRange = document.getElementById('opacityRange');
+
+    function setOverlay(key) {
+      // 現在の overlay を地図から外す
+      if (currentOverlay) {
+        map.removeLayer(currentOverlay);
+      }
+      // 新しい overlay を追加
+      var ov = overlays[key];
+      if (ov) {
+        ov.setOpacity(parseFloat(opacityRange.value));
+        ov.addTo(map);
+        currentOverlay = ov;
+      }
+    }
+
+    // 初期表示（セレクトの最初の値）
+    setOverlay(layerSelect.value);
+
+    // セレクト変更時に切り替え
+    layerSelect.addEventListener('change', function () {
+      setOverlay(this.value);
+    });
+
+    // 不透明度スライダー
+    opacityRange.addEventListener('input', function () {
+      var v = parseFloat(this.value);
+      if (currentOverlay) {
+        currentOverlay.setOpacity(v);
+      }
+    });
+  </script>
+</body>
+</html>
+
