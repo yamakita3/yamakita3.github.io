@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>OBIS maps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    .control-panel {
+      position: absolute;
+      top: 10px;
+      left: 50px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .control-panel label {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .control-panel select,
+    .control-panel input[type="range"] {
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- コントロールUI -->
+  <div class="control-panel">
+    <label for="layerSelect"><b>指標 / 変換:</b></label>
+    <select id="layerSelect">
+      <option value="N_asis_OBIS_all">N asis</option>
+      <option value="N_log_OBIS_all">N log</option>
+      <option value="es50_asis_obis">ES50 asis</option>
+      <option value="es50_log_obis">ES50 log</option>
+      <option value="maxp_asis_obis">MaxP asis</option>
+      <option value="maxp_log_obis">MaxP log</option>
+      <option value="shanon_asis_obis">Shannon asis</option>
+      <option value="shanon_log_asis_obis">Shannon log</option>
+      <option value="simpson_asis_obis">Simpson asis</option>
+      <option value="simpson_log_obis">Simpson log</option>
+      <option value="sp_asis_obis">SP asis</option>
+      <option value="sp_log_obis">SP log</option>
+    </select>
+
+    <label for="opacityRange"><b>不透明度:</b></label>
+    <input id="opacityRange" type="range" min="0" max="1" step="0.05" value="0.7" />
+  </div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    // ---------- 1. ベースマップ ----------
+    var map = L.map('map', {
+      center: [20, 0],   // 中心（適宜調整）
+      zoom: 2,          // 初期ズーム
+      worldCopyJump: true
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 8,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ---------- 2. PNG を地球全体に貼る bounds ----------
+    // [南西緯度, 南西経度], [北東緯度, 北東経度]
+    var worldBounds = [[-90, -180], [90, 180]];
+
+    // ---------- 3. PNG レイヤの定義 ----------
